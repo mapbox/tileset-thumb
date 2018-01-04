@@ -22,10 +22,13 @@ const zxyToTile = () => {
 };
 
 const paint = (buffer, width, x, y, color) => {
+  if (x >= width) throw new Error('x coordinate is beyond width of image');
   const offset = (width * y + x) * 4;
+  if (offset >= buffer.length) throw new Error(`y coordinate is beyond height of image (${y} vs ${buffer.length/width/4})`);
   buffer[offset] =
   buffer[offset + 1] =
   buffer[offset + 2] = color;
+  buffer[offset + 3] = 255; // alpha
 };
 
 // Some zoom levels have smaller dimensions (in tiles) than there are
@@ -34,8 +37,8 @@ const paint = (buffer, width, x, y, color) => {
 // of the area to paint and then iterate over each pixel in it to paint.
 const paintTile = (buffer, width, z, x, y, color) => {
   const blockSize = Math.max(1, Math.ceil(width / ZSIZE[z]));
-  const x0 = Math.round((x / ZSIZE[z]) * width);
-  const y0 = Math.round((y / ZSIZE[z]) * width);
+  const x0 = Math.floor((x / ZSIZE[z]) * width);
+  const y0 = Math.floor((y / ZSIZE[z]) * width);
   for (let x1 = 0; x1 < blockSize; x1++) {
     for (let y1 = 0; y1 < blockSize; y1++) {
       paint(buffer, width, x0 + x1, y0 + y1, color);
@@ -47,14 +50,14 @@ const createGrid = (thumbs, size, cols) => {
   const zooms = Object.keys(thumbs).sort();
   const minzoom = Math.min.apply(Math, zooms);
   const maxzoom = Math.max.apply(Math, zooms);
-  const rows = Math.floor(maxzoom/cols) - Math.floor(minzoom/cols);
+  const rows = (Math.floor(maxzoom/cols) - Math.floor(minzoom/cols)) + 1;
   const grid = (new Uint8Array((cols * size) * (rows * size) * 4)).fill(COLOR_WHITE);
   zooms.forEach((z, num) => {
     const row = Math.floor(num / cols);
     const col = num % cols;
     for (let x = 0; x < size; x++) {
       for (let y = 0; y < size; y++) {
-        const reader = (size * y + x) * 4
+        const reader = (size * y + x) * 4;
         const wx = (size * col) + x;
         const wy = (size * row) + y;
         paint(grid, size * cols, wx, wy, thumbs[z][reader]);
