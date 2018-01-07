@@ -1,5 +1,7 @@
 const tape = require('tape');
+const pixelmatch = require('pixelmatch');
 const createThumb = require('../index.js').createThumb;
+const PNG = require('pngjs').PNG;
 const fs = require('fs');
 
 tape('paint', (assert) => {
@@ -84,6 +86,10 @@ tape('createThumb, zxy:true', (assert) => {
       if (process.env.UPDATE) {
         fs.writeFileSync(`${__dirname}/fixtures/tiles.256.png`, buffer);
       }
+
+      const expected = PNG.sync.read(fs.readFileSync(`${__dirname}/fixtures/tiles.256.png`));
+      const actual = PNG.sync.read(buffer);
+      assert.deepEqual(pixelmatch(expected, actual, null, 256, 256), 0, 'matches expected fixture');
       assert.end();
     });
 });
@@ -95,6 +101,10 @@ tape('createThumb, zxy:true, size:128', (assert) => {
       if (process.env.UPDATE) {
         fs.writeFileSync(`${__dirname}/fixtures/tiles.128.png`, buffer);
       }
+
+      const expected = PNG.sync.read(fs.readFileSync(`${__dirname}/fixtures/tiles.128.png`));
+      const actual = PNG.sync.read(buffer);
+      assert.deepEqual(pixelmatch(expected, actual, null, 128, 128), 0, 'matches expected fixture');
       assert.end();
     });
 });
@@ -106,6 +116,10 @@ tape('createThumb, zxy:true, size:512', (assert) => {
       if (process.env.UPDATE) {
         fs.writeFileSync(`${__dirname}/fixtures/tiles.512.png`, buffer);
       }
+
+      const expected = PNG.sync.read(fs.readFileSync(`${__dirname}/fixtures/tiles.512.png`));
+      const actual = PNG.sync.read(buffer);
+      assert.deepEqual(pixelmatch(expected, actual, null, 512, 512), 0, 'matches expected fixture');
       assert.end();
     });
 });
