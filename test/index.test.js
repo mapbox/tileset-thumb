@@ -39,6 +39,25 @@ tape('paint', (assert) => {
 tape('paintTile', (assert) => {
   const paintTile = require('../index.js').paintTile;
   let buffer;
+  const empty = (new Uint8Array(4 * 4 * 4)).fill(0);
+
+  // ignores out of bounds coords
+  buffer = (new Uint8Array(4 * 4 * 4)).fill(0);
+  paintTile(buffer, 4, 0, -1, 0, 64);
+  paintTile(buffer, 4, 0, -1, -1, 64);
+  assert.deepEqual(buffer, empty);
+
+  // paints all pixels at z0
+  buffer = (new Uint8Array(4 * 4 * 4)).fill(0);
+  paintTile(buffer, 4, 0, 0, 0, 64);
+  assert.deepEqual(buffer[0], 64, '0,0 R = 64');
+  assert.deepEqual(buffer[1], 64, '0,0 G = 64');
+  assert.deepEqual(buffer[2], 64, '0,0 B = 64');
+  assert.deepEqual(buffer[3], 255, '0,0 A = 255');
+  assert.deepEqual(buffer[60], 64, '15,15 R = 64');
+  assert.deepEqual(buffer[61], 64, '15,15 G = 64');
+  assert.deepEqual(buffer[62], 64, '15,15 B = 64');
+  assert.deepEqual(buffer[63], 255, '15,15 A = 255');
 
   // paints all pixels at z0
   buffer = (new Uint8Array(4 * 4 * 4)).fill(0);
