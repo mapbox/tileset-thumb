@@ -1,5 +1,5 @@
 {
-  "name": "tileset-thumb",
+  "name": "@mapbox/tileset-thumb",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
