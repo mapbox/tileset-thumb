@@ -36,6 +36,10 @@ const paint = (buffer, width, x, y, color) => {
 // of the image rather than just a single pixel - calculate the size
 // of the area to paint and then iterate over each pixel in it to paint.
 const paintTile = (buffer, width, z, x, y, color) => {
+  if (x < 0) return;
+  if (y < 0) return;
+  if (x >= ZSIZE[z]) return;
+  if (y >= ZSIZE[z]) return;
   const blockSize = Math.max(1, Math.ceil(width / ZSIZE[z]));
   const x0 = Math.floor((x / ZSIZE[z]) * width);
   const y0 = Math.floor((y / ZSIZE[z]) * width);

@@ -165,3 +165,23 @@ tape('createThumb, zxy:true, z1-2', (assert) => {
   ].join('\n'));
 });
 
+tape('createThumb, zxy:true, noop', (assert) => {
+  const thumb = createThumb({ zxy: true })
+  thumb.on('data', (buffer) => {
+    if (process.env.UPDATE) {
+      fs.writeFileSync(`${__dirname}/fixtures/tiles.noop.png`, buffer);
+    }
+
+    const expected = PNG.sync.read(fs.readFileSync(`${__dirname}/fixtures/tiles.noop.png`));
+    const actual = PNG.sync.read(buffer);
+    assert.deepEqual(pixelmatch(expected, actual, null, 1024, 256), 0, 'matches expected fixture');
+    assert.end();
+  });
+  thumb.end([
+    '0/1/0',
+    '0/-1/0',
+    '0/0/1',
+    '0/0/-1'
+  ].join('\n'));
+});
+
