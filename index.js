@@ -76,6 +76,8 @@ const createGrid = (thumbs, size, cols) => {
 };
 
 const createThumb = (options) => {
+  options = options || {};
+
   // thumbnail size in pixels
   const size = options.size || 256;
 

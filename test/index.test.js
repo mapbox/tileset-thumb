@@ -184,23 +184,21 @@ tape('createThumb, zxy:true, z1-2', (assert) => {
   ].join('\n'));
 });
 
-tape('createThumb, zxy:true, noop', (assert) => {
-  const thumb = createThumb({ zxy: true })
+// Test that the createThumb stream works with a tile object stream rather than
+// a line-delimited zxy stream.
+tape('createThumb, zxy:false', (assert) => {
+  const thumb = createThumb()
   thumb.on('data', (buffer) => {
-    if (process.env.UPDATE) {
-      fs.writeFileSync(`${__dirname}/fixtures/tiles.noop.png`, buffer);
-    }
-
-    const expected = PNG.sync.read(fs.readFileSync(`${__dirname}/fixtures/tiles.noop.png`));
+    const expected = PNG.sync.read(fs.readFileSync(`${__dirname}/fixtures/tiles.z0-1.png`));
     const actual = PNG.sync.read(buffer);
     assert.deepEqual(pixelmatch(expected, actual, null, 1024, 256), 0, 'matches expected fixture');
     assert.end();
   });
-  thumb.end([
-    '0/1/0',
-    '0/-1/0',
-    '0/0/1',
-    '0/0/-1'
-  ].join('\n'));
+  thumb.write({ z:0, x:0, y:0 });
+  thumb.write({ z:1, x:0, y:0 });
+  thumb.write({ z:1, x:1, y:0 });
+  thumb.write({ z:1, x:0, y:1 });
+  thumb.write({ z:1, x:1, y:1 });
+  thumb.end();
 });
 
