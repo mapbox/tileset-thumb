@@ -50,11 +50,11 @@ const createGrid = (thumbs, size, cols) => {
   const zooms = Object.keys(thumbs).sort();
   const minzoom = Math.min.apply(Math, zooms);
   const maxzoom = Math.max.apply(Math, zooms);
-  const rows = (Math.floor(maxzoom/cols) - Math.floor(minzoom/cols)) + 1;
+  const rows = Math.floor(maxzoom/cols) + 1;
   const grid = (new Uint8Array((cols * size) * (rows * size) * 4)).fill(COLOR_WHITE);
-  zooms.forEach((z, num) => {
-    const row = Math.floor(num / cols);
-    const col = num % cols;
+  zooms.forEach((z) => {
+    const row = Math.floor(z / cols);
+    const col = z % cols;
     for (let x = 0; x < size; x++) {
       for (let y = 0; y < size; y++) {
         const reader = (size * y + x) * 4;

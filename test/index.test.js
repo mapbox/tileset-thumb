@@ -124,3 +124,44 @@ tape('createThumb, zxy:true, size:512', (assert) => {
     });
 });
 
+tape('createThumb, zxy:true, z0-1', (assert) => {
+  const thumb = createThumb({ zxy: true })
+  thumb.on('data', (buffer) => {
+    if (process.env.UPDATE) {
+      fs.writeFileSync(`${__dirname}/fixtures/tiles.z0-1.png`, buffer);
+    }
+
+    const expected = PNG.sync.read(fs.readFileSync(`${__dirname}/fixtures/tiles.z0-1.png`));
+    const actual = PNG.sync.read(buffer);
+    assert.deepEqual(pixelmatch(expected, actual, null, 1024, 256), 0, 'matches expected fixture');
+    assert.end();
+  });
+  thumb.end([
+    '0/0/0',
+    '1/0/0', '1/1/0',
+    '1/0/1', '1/1/1'
+  ].join('\n'));
+});
+
+tape('createThumb, zxy:true, z1-2', (assert) => {
+  const thumb = createThumb({ zxy: true })
+  thumb.on('data', (buffer) => {
+    if (process.env.UPDATE) {
+      fs.writeFileSync(`${__dirname}/fixtures/tiles.z1-2.png`, buffer);
+    }
+
+    const expected = PNG.sync.read(fs.readFileSync(`${__dirname}/fixtures/tiles.z1-2.png`));
+    const actual = PNG.sync.read(buffer);
+    assert.deepEqual(pixelmatch(expected, actual, null, 1024, 256), 0, 'matches expected fixture');
+    assert.end();
+  });
+  thumb.end([
+    '1/0/0', '1/1/0',
+    '1/0/1', '1/1/1',
+    '2/0/0', '2/1/0', '2/2/0', '2/3/0',
+    '2/0/1', '2/1/1', '2/2/1', '2/3/1',
+    '2/0/2', '2/1/2', '2/2/2', '2/3/2',
+    '2/0/3', '2/1/3', '2/2/3', '2/3/3',
+  ].join('\n'));
+});
+
