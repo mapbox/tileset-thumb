@@ -1,3 +1,7 @@
+![travis](https://travis-ci.org/mapbox/tileset-thumb.svg?branch=master)
+
+Maintainer: @yhahn
+
 tileset-thumb
 -------------
 Pipe a tileset's [tilelive](https://github.com/mapbox/tilelive) stream into `tileset-thumb` to generate a PNG thumbnail summarizing coverage of that tileset's tiles.
